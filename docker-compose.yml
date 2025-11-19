@@ -1,9 +1,26 @@
 version: '3.8'
-
 services:
-  nodeapp:
-    container_name: 'node-app-container'
+  mysqldb:
+    image: mysql:8.0
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: 'root'
+      MYSQL_DATABASE: 'music_database'
+    ports:
+      - "3306:3306"
+    volumes:
+      - dbdata:/var/lib/mysql
+
+  app:
     build: .
     ports:
-    - '3000:3000'
-
+      - "3000:3000"
+    environment:
+      DB_HOST: 'mysqldb'
+      DB_USER: 'root'
+      DB_PASSWORD: 'root'
+      DB_NAME: 'music_database'
+    depends_on:
+      - mysqldb
+volumes:
+  dbdata:

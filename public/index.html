@@ -161,48 +161,10 @@
   </nav>
 
   <main>
-    <h1>Dummy Music Player</h1>
-    <div class="subtitle">Feel the Beat, Live the Moment</div>
+  <h1>Dummy Music Player</h1>
+  <div class="subtitle">Feel the Beat, Live the Moment</div>
 
-    <audio controls>
-      <source src="sample-song.mp3" type="audio/mpeg" />
-      Your browser does not support the audio element.
-    </audio>
-
-    <audio controls>
-      <source src="sample-song2.mp3" type="audio/mpeg" />
-      Your browser does not support the audio element.
-    </audio>
-
-    <audio controls>
-      <source src="sample-song3.mp3" type="audio/mpeg" />
-      Your browser does not support the audio element.
-    </audio>
-
-    <audio controls>
-      <source src="sample-song4.mp3" type="audio/mpeg" />
-      Your browser does not support the audio element.
-    </audio>
-
-    <audio controls>
-      <source src="sample-song5.mp3" type="audio/mpeg" />
-      Your browser does not support the audio element.
-    </audio>
-
-    <audio controls>
-      <source src="sample-song6.mp3" type="audio/mpeg" />
-      Your browser does not support the audio element.
-    </audio>
-
-    <audio controls>
-      <source src="sample-song7.mp3" type="audio/mpeg" />
-      Your browser does not support the audio element.
-    </audio>
-
-    <audio controls>
-      <source src="sample-song8.mp3" type="audio/mpeg" />
-      Your browser does not support the audio element.
-    </audio>
+  <div id="songList"></div>
   </main>
 
   <footer>
@@ -210,26 +172,50 @@
   </footer>
 
   <script>
-    const audios = document.querySelectorAll('audio');
-    audios.forEach(audio => {
+    async function loadSongs() {
+  try {
+    const response = await fetch('/api/songs');
+    const songs = await response.json();
+    const songList = document.getElementById('songList');
+    songList.innerHTML = '';
+
+    songs.forEach(song => {
+      const div = document.createElement('div');
+      div.style.margin = '1rem auto';
+      div.style.maxWidth = '440px';
+
+      const title = document.createElement('div');
+      title.textContent = `${song.name} - ${song.artist}`;
+      title.style.marginBottom = '0.4rem';
+      title.style.fontWeight = '700';
+
+      const audio = document.createElement('audio');
+      audio.controls = true;
+      audio.src = '/' + song.url;
+      audio.style.width = '100%';
+      audio.style.borderRadius = '18px';
+      audio.style.boxShadow = '0 14px 36px rgba(76, 240, 255, 0.6)';
+      audio.style.background = 'rgba(10, 25, 28, 0.85)';
       audio.addEventListener('play', () => {
-        audios.forEach(otherAudio => {
-          if (otherAudio !== audio) {
-            otherAudio.pause();
-            otherAudio.currentTime = 0;
+        document.querySelectorAll('audio').forEach(a => {
+          if (a !== audio) {
+            a.pause();
+            a.currentTime = 0;
           }
         });
       });
-    });
 
-    // Navigation active link toggle
-    const navLinks = document.querySelectorAll('nav a');
-    navLinks.forEach(link => {
-      link.addEventListener('click', (e) => {
-        navLinks.forEach(l => l.classList.remove('active'));
-        e.currentTarget.classList.add('active');
-      });
+      div.appendChild(title);
+      div.appendChild(audio);
+      songList.appendChild(div);
     });
+  } catch (err) {
+    console.error('Failed to load songs:', err);
+  }
+}
+
+window.onload = loadSongs;
+
   </script>
 </body>
 </html>
