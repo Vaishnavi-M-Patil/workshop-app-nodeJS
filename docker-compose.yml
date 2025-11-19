@@ -1,0 +1,9 @@
+version: '3.8'
+
+services:
+  nodeapp:
+    container_name: 'node-app-container'
+    build: .
+    ports:
+    - '3000:3000'
+
