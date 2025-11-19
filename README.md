@@ -26,3 +26,5 @@ CREATE TABLE songs ( id INT AUTO_INCREMENT PRIMARY KEY, name VARCHAR(255) NOT NU
 ```
 INSERT INTO songs (name, artist, url) VALUES('Sample Song', 'Unknown Artist', 'sample-song.mp3'),('Sample Song 1', 'Unknown Artist', 'sample-song1.mp3'),('Sample Song 2', 'Unknown Artist', 'sample-song2.mp3'),('Sample Song 3', 'Unknown Artist', 'sample-song3.mp3'),('Sample Song 4', 'Unknown Artist', 'sample-song4.mp3'),('Sample Song 5', 'Unknown Artist', 'sample-song5.mp3'),('Sample Song 6', 'Unknown Artist', 'sample-song6.mp3'),('Sample Song 7', 'Unknown Artist', 'sample-song7.mp3'),('Sample Song 8', 'Unknown Artist', 'sample-song8.mp3');
 ```
+#### Note:
+- Add port number `3306`, `3000` in security group of instance or server.
