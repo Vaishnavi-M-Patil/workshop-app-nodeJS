@@ -3,7 +3,6 @@
 <head>
   <title>Dummy Music Player</title>
   <style>
-    /* Make html and body full height, no margin */
     html, body {
       height: 100%;
       margin: 0;
@@ -17,7 +16,6 @@
       overflow-x: hidden;
     }
 
-    /* Make body a flex container with column direction */
     body {
       display: flex;
       flex-direction: column;
@@ -25,7 +23,6 @@
       padding: 0 1rem 0;
     }
 
-    /* Navigation menu styling */
     nav {
       background: rgba(0, 18, 25, 0.85);
       padding: 1rem 2rem;
@@ -38,8 +35,6 @@
       z-index: 110;
       font-weight: 700;
       font-size: 1.2rem;
-      letter-spacing: 0.05em;
-      user-select: none;
       text-transform: uppercase;
     }
 
@@ -49,12 +44,6 @@
       padding: 6px 14px;
       border-radius: 12px;
       transition: color 0.3s ease, background 0.3s ease;
-      box-shadow: inset 0 0 0 0 transparent;
-      cursor: pointer;
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     }
 
     nav a.active,
@@ -62,10 +51,8 @@
       color: #00262f;
       background: #4cf0ff;
       box-shadow: inset 0 0 15px #4cf0ff;
-      text-shadow: 0 0 5px #4cf0ff;
     }
 
-    /* Main content grows to fill container pushing footer down */
     main {
       flex-grow: 1;
       display: flex;
@@ -74,45 +61,62 @@
       padding-bottom: 2rem;
     }
 
-    /* Player container */
     h1 {
       margin: 2.5rem 0 0.5rem;
       text-shadow: 2px 3px 12px rgba(76, 240, 255, 0.8);
       font-weight: 900;
       font-size: 3rem;
       letter-spacing: 0.12em;
-      font-family: 'Segoe UI Black', Tahoma, Geneva, Verdana, sans-serif;
     }
 
-    /* Subtitle */
     .subtitle {
       color: #8ef0ff;
       margin-bottom: 2rem;
       font-style: italic;
       font-size: 1.35rem;
-      letter-spacing: 0.07em;
       text-shadow: 1px 1.5px 4px rgba(76, 240, 255, 0.5);
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     }
 
-    /* Style for each audio tag */
-    audio {
-      margin: 1.3rem auto;
-      width: 90%;
-      max-width: 440px;
-      outline: none;
-      border-radius: 18px;
-      box-shadow: 0 14px 36px rgba(76, 240, 255, 0.6);
+    /* Song grid styling */
+    #songList {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 1.5rem;
+      justify-items: center;
+      padding: 0 1rem;
+    }
+
+    .song-item {
       background: rgba(10, 25, 28, 0.85);
+      border-radius: 18px;
+      padding: 0.8rem 1rem;
+      box-shadow: 0 6px 20px rgba(76, 240, 255, 0.4);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      max-width: 320px;
+    }
+
+    .song-item:hover {
+      transform: scale(1.03);
+      box-shadow: 0 10px 28px rgba(76, 240, 255, 0.6);
+    }
+
+    .song-title {
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+    }
+
+    audio {
+      width: 100%;
+      border-radius: 12px;
+    }
+
+    /* Glowing highlight on playing song */
+    .song-item.playing {
+      box-shadow: 0 0 25px 6px #4cf0ff;
+      transform: scale(1.05);
       transition: box-shadow 0.4s ease, transform 0.3s ease;
     }
 
-    audio:hover {
-      box-shadow: 0 22px 48px #4cf0ff;
-      transform: scale(1.04);
-    }
-
-    /* Footer styling */
     footer {
       padding: 1.8rem 2rem;
       font-size: 1.1rem;
@@ -120,34 +124,23 @@
       font-weight: 700;
       text-shadow: 0 0 15px #4cf0ff;
       border-top: 2px solid rgba(76, 240, 255, 0.35);
-      letter-spacing: 0.06em;
       background: rgba(0, 0, 0, 0.55);
       border-radius: 18px 18px 0 0;
       box-shadow: inset 0 3px 22px rgba(76, 240, 255, 0.3);
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
       text-align: center;
       flex-shrink: 0;
     }
 
-    /* Responsive adjustments */
     @media (max-width: 600px) {
       nav {
         flex-direction: column;
         gap: 1.6rem;
-        font-size: 1.2rem;
-      }
-      audio {
-        width: 100%;
       }
       h1 {
-        font-size: 2.5rem;
+        font-size: 2.4rem;
       }
       .subtitle {
         font-size: 1.15rem;
-      }
-      footer {
-        font-size: 1rem;
-        padding: 1rem 1.5rem;
       }
     }
   </style>
@@ -161,10 +154,9 @@
   </nav>
 
   <main>
-  <h1>Dummy Music Player</h1>
-  <div class="subtitle">Feel the Beat, Live the Moment</div>
-
-  <div id="songList"></div>
+    <h1>Dummy Music Player</h1>
+    <div class="subtitle">Feel the Beat, Live the Moment</div>
+    <div id="songList"></div>
   </main>
 
   <footer>
@@ -173,49 +165,52 @@
 
   <script>
     async function loadSongs() {
-  try {
-    const response = await fetch('/api/songs');
-    const songs = await response.json();
-    const songList = document.getElementById('songList');
-    songList.innerHTML = '';
+      try {
+        const response = await fetch('/api/songs');
+        const songs = await response.json();  // Your 25 songs data
+        const songList = document.getElementById('songList');
+        songList.innerHTML = '';
 
-    songs.forEach(song => {
-      const div = document.createElement('div');
-      div.style.margin = '1rem auto';
-      div.style.maxWidth = '440px';
+        songs.forEach((song, index) => {
+          const div = document.createElement('div');
+          div.className = 'song-item';
 
-      const title = document.createElement('div');
-      title.textContent = `${song.name} - ${song.artist}`;
-      title.style.marginBottom = '0.4rem';
-      title.style.fontWeight = '700';
+          const title = document.createElement('div');
+          title.className = 'song-title';
+          title.textContent = `${index + 1}. ${song.name} - ${song.artist}`;
 
-      const audio = document.createElement('audio');
-      audio.controls = true;
-      audio.src = '/' + song.url;
-      audio.style.width = '100%';
-      audio.style.borderRadius = '18px';
-      audio.style.boxShadow = '0 14px 36px rgba(76, 240, 255, 0.6)';
-      audio.style.background = 'rgba(10, 25, 28, 0.85)';
-      audio.addEventListener('play', () => {
-        document.querySelectorAll('audio').forEach(a => {
-          if (a !== audio) {
-            a.pause();
-            a.currentTime = 0;
-          }
+          const audio = document.createElement('audio');
+          audio.controls = true;
+          audio.src = '/' + song.url;
+
+          // When a song ends, play the next
+          audio.addEventListener('ended', () => {
+            const nextAudio = songList.querySelectorAll('audio')[index + 1];
+            if (nextAudio) nextAudio.play();
+          });
+
+          // Play event: pause others and highlight current
+          audio.addEventListener('play', () => {
+            document.querySelectorAll('audio').forEach(a => {
+              if (a !== audio) {
+                a.pause();
+                a.currentTime = 0;
+                a.parentElement.classList.remove('playing');
+              }
+            });
+            audio.parentElement.classList.add('playing');
+          });
+
+          div.appendChild(title);
+          div.appendChild(audio);
+          songList.appendChild(div);
         });
-      });
+      } catch (err) {
+        console.error('Failed to load songs:', err);
+      }
+    }
 
-      div.appendChild(title);
-      div.appendChild(audio);
-      songList.appendChild(div);
-    });
-  } catch (err) {
-    console.error('Failed to load songs:', err);
-  }
-}
-
-window.onload = loadSongs;
-
+    window.onload = loadSongs;
   </script>
 </body>
 </html>
