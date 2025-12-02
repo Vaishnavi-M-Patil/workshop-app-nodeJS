@@ -1,0 +1,9 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: mysql-config
+  namespace: node
+data:
+  host: mysqldb
+  user: root
+  db_name: music_database
