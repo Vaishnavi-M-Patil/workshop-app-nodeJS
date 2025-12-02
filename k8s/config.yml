@@ -4,6 +4,6 @@ metadata:
   name: mysql-config
   namespace: node
 data:
-  host: mysqldb
+  host: mysql-service
   user: root
   db_name: music_database
