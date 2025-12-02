@@ -118,6 +118,8 @@ spec:
 ```
 kubectl apply -f service.yaml
 ```
-
+```
+kubectl exec -it node-deployment-7fdc4d77d9-cmgz5 -n node -- sh
+```
 ## Step 5: Access Your node App
 - Finally, access your React app through the exposed NodePort.
