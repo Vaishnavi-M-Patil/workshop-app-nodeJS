@@ -1,4 +1,4 @@
-# Deploying a Node App to Kubernetes
+# Deploying a Node App On Kubernetes Cluster
 ## Prerequisites
 - A Kubernetes cluster (you can use Minikube for local development or a cloud provider’s Kubernetes service).
 - Docker installed on your local machine for building container images.
